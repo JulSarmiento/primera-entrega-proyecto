@@ -1,5 +1,5 @@
 const fs = require("fs");
-const readFiles = require("../utilities/readfiles");
+const readFiles = require("../utilities/readFiles");
 const saveFiles = require("../utilities/saveFiles");
 
 class Container {
@@ -11,6 +11,7 @@ class Container {
   async saveProduct(element){
     const array = await this.getAll();
     element.id = array.length > 0 ? array[array.length -1].id + 1 : 1;
+    element.timestamp = Date.now();
 
     try{
       array.push(element);
@@ -42,7 +43,6 @@ class Container {
   async getAll(){
     try {
       const products = await readFiles(this.filename);
-      console.log("products array in constructor", products);
       return products;
     } catch (err) {
       console.log(err);

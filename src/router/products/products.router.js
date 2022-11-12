@@ -7,6 +7,7 @@ const Container = require('../../../classes/container.class');
 const db = 'products';
 const products = new Container(db)
 
+// GET all or GET by ID
 router.get('/:id?', productExist(products) ,async (req, res, next) => {
   try{
     if(req.products){
@@ -27,18 +28,34 @@ router.get('/:id?', productExist(products) ,async (req, res, next) => {
   }
 });
 
+// PORT route
 router.post('/', (req, res, next) => {
+  console.log('req.body', req.body)
   try{
-
+    products.saveProduct(req.body)
+    res.status(200).json({
+      success: true, 
+      data: `Producto agregado.`
+    })
   }
   catch (err) {
     next(err);
   }
 });
 
-router.put('/', (req, res, next) => {
+// PUT route
+router.put('/:id', productExist(products), async (req, res, next) => {
   try{
-
+    if(req.products){
+      console.log('req.params', req.params)
+      console.log('req.body', req.body)
+      const {id} = req.params;
+      const data = await products.update(id, req.body);
+      res.status(200).json({
+        success: true,
+        data: data
+      });
+    }
   }
   catch (err) {
     next(err);
