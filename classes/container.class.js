@@ -11,7 +11,7 @@ class Container {
   async saveProduct(element){
     const array = await this.getAll();
     element.id = array.length > 0 ? array[array.length -1].id + 1 : 1;
-    element.timestamp = Date.now();
+    element.timestamp = new Date().toLocaleString();
 
     try{
       array.push(element);
@@ -19,7 +19,7 @@ class Container {
       return element.id;
     }
     catch (err) {
-      console.log(err);
+      (err);
     }
   };
 
@@ -50,6 +50,21 @@ class Container {
     
   };
 
+  async update(id, data){
+    try{
+      const array = await readFiles(this.filename);
+      const current = array.find(item => item.id === Number(id));
+      const currentIndex = array.indexOf(current);
+      array[currentIndex] = {...current, ...data};
+      saveFiles(this.filename, array);    
+      return array[currentIndex];
+    }
+    catch (err) {
+      console.log(err)
+    }
+    
+  };
+
   async deleteById(elementId){
     try{
       const array = await readFiles(this.filename);
@@ -60,21 +75,6 @@ class Container {
     }
 
   };
-
-  async update(id, data){
-    try{
-      const array = await readFiles(this._filename);
-      const current = array.find(item => item.id === Number(id));
-      const currentIndex = array.indexOf(current);
-      array[currentIndex] = {...current, ...data};
-      saveFiles(this._filename, array);    
-      return array[currentIndex];
-    }
-    catch (err) {
-      console.log(err)
-    }
-    
-  }
 
   async deleteAll(){
     try {

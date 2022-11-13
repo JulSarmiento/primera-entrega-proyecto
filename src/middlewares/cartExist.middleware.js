@@ -1,4 +1,4 @@
-const productExist = (products) => {
+const cartExist = (cart) => {
   return async (req, res, next) => {
     const { id } = req.params;
 
@@ -6,9 +6,9 @@ const productExist = (products) => {
       return next();
     }
 
-    const current = await products.getbyId(Number(id))
+    const current = await cart.getbyId(Number(id))
     if(current) {
-      req.products = current;
+      req.cart = current;
       return next();
     };
 
@@ -19,4 +19,4 @@ const productExist = (products) => {
   };
 };
 
-module.exports = productExist;
+module.exports = cartExist;

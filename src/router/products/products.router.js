@@ -35,7 +35,7 @@ router.post('/', (req, res, next) => {
     products.saveProduct(req.body)
     res.status(200).json({
       success: true, 
-      data: `Producto agregado.`
+      data: req.body
     })
   }
   catch (err) {
@@ -62,9 +62,16 @@ router.put('/:id', productExist(products), async (req, res, next) => {
   }
 })
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', productExist(products), async (req, res, next) => {
   try{
-
+    if(req.products){
+      const {id} = req.params;
+      await products.deleteById(id);
+      res.status(200).json({
+        success: true,
+        message: 'Producto eliminado.'
+      })
+    }
   }
   catch (err) {
     next(err);
