@@ -4,8 +4,7 @@ const isAdmin = require('../../middlewares/isAdmin.middleware');
 const productExist = require('../../middlewares/productExist.middleware')
 const Container = require('../../../classes/container.class');
 
-const db = 'products';
-const products = new Container(db)
+const products = new Container('products')
 
 // GET all or GET by ID
 router.get('/:id?', productExist(products) ,async (req, res, next) => {

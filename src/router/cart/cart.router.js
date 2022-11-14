@@ -4,38 +4,16 @@ const isAdmin = require('../../middlewares/isAdmin.middleware');
 const cartExist = require('../../middlewares/cartExist.middleware')
 const Container = require('../../../classes/container.class');
 
-const db = 'cart';
-const cart = new Container(db)
-
-// GET all or GET by ID
-router.get('/:id?', cartExist(cart) ,async (req, res, next) => {
-  try{
-    if(req.products){
-      res.status(200).json({
-        success: true,
-        data: req.products
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-        data: await cart.getAll()
-      });
-    }
-
-  }
-  catch (err) {
-    next(err);
-  }
-});
+const cart = new Container('cart');
+const products = new Container('products');
 
 // PORT route
-router.post('/', (req, res, next) => {
-  console.log('req.body', req.body)
+router.post('/', async (req, res, next) => {
   try{
-    cart.saveProduct(req.body)
+    const data = await cart.saveProduct({products : []})
     res.status(200).json({
       success: true, 
-      data: req.body
+      data
     })
   }
   catch (err) {
@@ -43,31 +21,14 @@ router.post('/', (req, res, next) => {
   }
 });
 
-// PUT route
-router.put('/:id', cartExist(cart), async (req, res, next) => {
-  try{
-    if(req.products){
-      const {id} = req.params;
-      const data = await cart.update(id, req.body);
-      res.status(200).json({
-        success: true,
-        data: data
-      });
-    }
-  }
-  catch (err) {
-    next(err);
-  }
-})
-
 router.delete('/:id', cartExist(cart), async (req, res, next) => {
   try{
-    if(req.products){
+    if(req.cart){
       const {id} = req.params;
-      await cart.deleteById(id);
+      await cart.deleteById(Number(id));
       res.status(200).json({
         success: true,
-        message: 'Producto eliminado.'
+        message: 'Carrito eliminado.'
       })
     }
   }
@@ -75,5 +36,44 @@ router.delete('/:id', cartExist(cart), async (req, res, next) => {
     next(err);
   }
 });
+
+// GET all or GET by ID
+router.get('/:id/products', cartExist(cart) ,async (req, res, next) => {
+  console.log('params in get products cart', req.params)
+  try{
+    if(req.cart){
+      console.log('current cart', req.cart)
+      res.status(200).json({
+        success: true,
+        data: req.cart.products
+      });
+    } 
+
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+
+
+// // PUT route
+// router.put('/:id', cartExist(cart), async (req, res, next) => {
+//   try{
+//     if(req.products){
+//       const {id} = req.params;
+//       const data = await cart.update(id, req.body);
+//       res.status(200).json({
+//         success: true,
+//         data: data
+//       });
+//     }
+//   }
+//   catch (err) {
+//     next(err);
+//   }
+// })
+
+
 
 module.exports = router;

@@ -16,7 +16,7 @@ class Container {
     try{
       array.push(element);
       saveFiles(this.filename, array);
-      return element.id;
+      return element;
     }
     catch (err) {
       (err);
