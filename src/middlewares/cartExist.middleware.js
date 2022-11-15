@@ -11,7 +11,7 @@ const cartExist = (cart) => {
 
     res.status(400).json({
       success: false,
-      error: `Product not found.`
+      error: `Cart not found.`
     });
   };
 };

@@ -23,6 +23,8 @@ class Container {
     }
   };
 
+
+
   async getRandom() {
     const array = await readFiles(this.filename);
     const random = Math.round(Math.random() * array.length);

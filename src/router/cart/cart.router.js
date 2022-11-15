@@ -7,7 +7,7 @@ const Container = require('../../../classes/container.class');
 const cart = new Container('cart');
 const products = new Container('products');
 
-// PORT route
+// POST route
 router.post('/', async (req, res, next) => {
   try{
     const data = await cart.saveProduct({products : []})
@@ -21,6 +21,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+// DELETE cart route
 router.delete('/:id', cartExist(cart), async (req, res, next) => {
   try{
     if(req.cart){
@@ -55,6 +56,48 @@ router.get('/:id/products', cartExist(cart) ,async (req, res, next) => {
   }
 });
 
+// POST products in cart, route
+router.post('/:id/products', cartExist(cart), async (req, res, next) => {
+  try{
+    const current  = req.cart;
+    const productId = req.body.product;
+    if (!productId) {
+      return next("Product not present in request")
+    }
+    console.log("Adding product", productId)
+    current.products.push(await products.getbyId(Number(productId)))
+    await cart.update(current.id, current)
+    res.status(200).json({
+      success: true, 
+      current
+    })
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+// DELETE products in cart, route
+router.delete('/:id/products/:id_prod', cartExist(cart), async (req, res, next) => {
+  try{
+    const current  = req.cart;
+    const productId = req.body.product;
+    const {id_pro} = req.params
+    if (!productId) {
+      return next("Product not present in request")
+    }
+
+    await cart.deleteById(Number(id_pro))
+    await cart.update(current.id, current)
+    res.status(200).json({
+      success: true, 
+      current
+    })
+  }
+  catch (err) {
+    next(err);
+  }
+});
 
 
 // // PUT route

@@ -1,6 +1,11 @@
 function isAdmin(req, res, next) {
-  let admin = true;
-  return admin;
+  if (process.env.IS_ADMIN){
+    return next();
+  }
+
+  res.json({
+    message: 'Larry estuvo aqui'
+  })
 };
 
 
