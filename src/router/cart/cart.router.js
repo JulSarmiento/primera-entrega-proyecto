@@ -62,15 +62,27 @@ router.post('/:id/products', cartExist(cart), async (req, res, next) => {
     const current  = req.cart;
     const productId = req.body.product;
     if (!productId) {
-      return next("Product not present in request")
-    }
-    console.log("Adding product", productId)
-    current.products.push(await products.getbyId(Number(productId)))
-    await cart.update(current.id, current)
+      return res.status(200).json({
+        success: false, 
+        message: "There no id to search."
+      })
+    } 
+
+    const selectedProduct = await products.getbyId(Number(productId));
+
+    if(!selectedProduct) {
+      return res.status(200).json({
+        success: false, 
+        message: "Product does not exist."
+      })
+    } 
+    current.products.push(selectedProduct);
+    await cart.update(current.id, current);
     res.status(200).json({
       success: true, 
       current
     })
+
   }
   catch (err) {
     next(err);
@@ -80,15 +92,20 @@ router.post('/:id/products', cartExist(cart), async (req, res, next) => {
 // DELETE products in cart, route
 router.delete('/:id/products/:id_prod', cartExist(cart), async (req, res, next) => {
   try{
-    const current  = req.cart;
-    const productId = req.body.product;
-    const {id_pro} = req.params
-    if (!productId) {
-      return next("Product not present in request")
-    }
+    let current  = req.cart;
+    const {id_prod} = req.params
 
-    await cart.deleteById(Number(id_pro))
-    await cart.update(current.id, current)
+    const selectedProduct = await products.getbyId(Number(id_prod));
+
+    if(!selectedProduct) {
+      return res.status(400).json({
+        success: false, 
+        message: "Product does not exist."
+      })
+    } 
+    current.products = current.products.filter(p => p.id !== Number(id_prod));
+    console.log('current products', current.products)
+    current = await cart.update(current.id, current)
     res.status(200).json({
       success: true, 
       current
@@ -98,25 +115,5 @@ router.delete('/:id/products/:id_prod', cartExist(cart), async (req, res, next) 
     next(err);
   }
 });
-
-
-// // PUT route
-// router.put('/:id', cartExist(cart), async (req, res, next) => {
-//   try{
-//     if(req.products){
-//       const {id} = req.params;
-//       const data = await cart.update(id, req.body);
-//       res.status(200).json({
-//         success: true,
-//         data: data
-//       });
-//     }
-//   }
-//   catch (err) {
-//     next(err);
-//   }
-// })
-
-
 
 module.exports = router;
