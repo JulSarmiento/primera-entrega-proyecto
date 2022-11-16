@@ -55,7 +55,7 @@ router.get('/:id/products', cartExist(cart) ,async (req, res, next) => {
   }
 });
 
-// POST products in cart, route
+// POST products in cart, route (using "product")
 router.post('/:id/products', cartExist(cart), async (req, res, next) => {
   try{
     const current  = req.cart;
