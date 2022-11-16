@@ -28,7 +28,7 @@ router.get('/:id?', productExist(products) ,async (req, res, next) => {
 });
 
 // PORT route
-router.post('/', (req, res, next) => {
+router.post('/', isAdmin, (req, res, next) => {
   console.log('req.body', req.body)
   try{
     products.saveProduct(req.body)
@@ -43,7 +43,7 @@ router.post('/', (req, res, next) => {
 });
 
 // PUT route
-router.put('/:id', productExist(products), async (req, res, next) => {
+router.put('/:id', [isAdmin, productExist(products)], async (req, res, next) => {
   try{
     if(req.products){
       console.log('req.params', req.params)
@@ -61,14 +61,16 @@ router.put('/:id', productExist(products), async (req, res, next) => {
   }
 })
 
-router.delete('/:id', productExist(products), async (req, res, next) => {
+// DELETE product by id
+router.delete('/:id', [isAdmin, productExist(products)], async (req, res, next) => {
+  console.log('estoy tratando de borrar el producto', req.params)
   try{
     if(req.products){
       const {id} = req.params;
-      await products.deleteById(id);
+      await products.deleteById(Number(id));
       res.status(200).json({
         success: true,
-        message: 'Producto eliminado.'
+        message: 'Deleted product.',
       })
     }
   }

@@ -1,4 +1,5 @@
 const productExist = (products) => {
+  console.log('estoy tratando de hacer que el middleware de isproductexist funcione')
   return async (req, res, next) => {
     const { id } = req.params;
 

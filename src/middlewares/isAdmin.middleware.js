@@ -1,12 +1,12 @@
 function isAdmin(req, res, next) {
-  if (process.env.IS_ADMIN){
+  if (process.env.IS_ADMIN === "true") {
     return next();
   }
 
   res.json({
-    message: 'Larry estuvo aqui'
-  })
-};
-
+    success: false,
+    message: `The route ${req.path} with the method ${req.method} not authorized`,
+  });
+}
 
 module.exports = isAdmin;

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const isAdmin = require('../../middlewares/isAdmin.middleware');
 const cartExist = require('../../middlewares/cartExist.middleware')
 const Container = require('../../../classes/container.class');
 
@@ -29,7 +28,7 @@ router.delete('/:id', cartExist(cart), async (req, res, next) => {
       await cart.deleteById(Number(id));
       res.status(200).json({
         success: true,
-        message: 'Carrito eliminado.'
+        message: 'Deleted.'
       })
     }
   }
