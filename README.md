@@ -1,4 +1,5 @@
 # primera-entrega-proyecto
+En este readme se encuentran los modelos de json que se envian mediante los diferentes metodos POST. Los campos que no se muestran en estos son generados mediante funciones especificadas en el Container.class.js
 
 ### Modelo de objeto producto
 {
@@ -11,3 +12,11 @@
 }
 
 ### Modelo de objeto carrito
+{
+    "products": []
+}
+
+### Modelo de objeto para añadir carrito
+{
+    "product": 1
+}
